@@ -19,8 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef SHORTCUT_H
-#define SHORTCUT_H
+#pragma once
 
 #include <QObject>
 
@@ -55,5 +54,3 @@ protected:
 private:
     QObject *m_object;
 };
-
-#endif // SHORTCUT_H

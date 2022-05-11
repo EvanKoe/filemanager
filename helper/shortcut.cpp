@@ -45,43 +45,38 @@ void ShortCut::install(QObject *target)
 
 bool ShortCut::eventFilter(QObject *obj, QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
-        // int keyInt = keyEvent->modifiers() + keyEvent->key();
+    if (e->type() != QEvent::KeyPress) {
+        return false;
+    }
 
-        if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return) {
-            emit open();
-        } else if (keyEvent->key() == Qt::Key_C && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit copy();
-        } else if (keyEvent->key() == Qt::Key_X && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit cut();
-        } else if (keyEvent->key() == Qt::Key_W && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit close();
-        } else if (keyEvent->key() == Qt::Key_V && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit paste();
-        } else if (keyEvent->key() == Qt::Key_F2) {
-            emit rename();
-        } else if (keyEvent->key() == Qt::Key_L && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit openPathEditor();
-        } else if (keyEvent->key() == Qt::Key_A && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit selectAll();
-        } else if (keyEvent->key() == Qt::Key_Backspace) {
-            emit backspace();
-        } else if (keyEvent->key() == Qt::Key_Delete) {
-            emit deleteFile();
-        } else if (keyEvent->key() == Qt::Key_F5) {
-            emit refresh();
-        } else if (keyEvent->key() == Qt::Key_H && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit showHidden();
-        } else if (keyEvent->key() == Qt::Key_Z && keyEvent->modifiers() & Qt::ControlModifier) {
-            emit undo();
-        } else if (keyEvent->key() >= Qt::Key_A && keyEvent->key() <= Qt::Key_Z) {
-            // Handle select
-            // KeyboardSearchManager::self()->addKeys(keyEvent->text());
-            emit keyPressed(keyEvent->text());
-            keyEvent->ignore();
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+
+    switch (keyEvent->key()) {
+        case (Qt::Key_F2): emit rename(); break;
+        case (Qt::Key_Backspace): emit backspace(); break;
+        case (Qt::Key_Delete): emit deleteFile(); break;
+        case (Qt::Key_F5): emit refresh(); break;
+    }
+
+    if (keyEvent->modifiers() & Qt::ControlModifier) {
+        switch (keyEvent->key()) {
+            case (Qt::Key_C): emit copy(); break;
+            case (Qt::Key_X): emit cut(); break;
+            case (Qt::Key_W): emit close(); break;
+            case (Qt::Key_P): emit paste(); break;
+            case (Qt::Key_L): emit openPathEditor(); break;
+            case (Qt::Key_H): emit showHidden(); break;
+            case (Qt::Key_Z): emit undo(); break;
         }
     }
 
+    if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return) {
+        emit open();
+    } else if (keyEvent->key() >= Qt::Key_A && keyEvent->key() <= Qt::Key_Z) {
+        emit keyPressed(keyEvent->text());
+        keyEvent->ignore();
+    }
+
     return QObject::eventFilter(obj, e);
+
 }
